@@ -6,11 +6,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import xuandien369.com.MemberCount;
 import xuandien369.com.model.ChatMessage;
 
 @Controller
 public class ChatController {
-	private static int count = 0;
 	@MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
@@ -21,9 +21,9 @@ public class ChatController {
     public ChatMessage addUser(@Payload ChatMessage chatMessage, 
                                SimpMessageHeaderAccessor headerAccessor) {
         // Add username in web socket session
-		++count;
+		int count = ++MemberCount.countMember;
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-        headerAccessor.getSessionAttributes().put("member",count);
+//        headerAccessor.getSessionAttributes().put("member",count);
         chatMessage.setMember(count);
         return chatMessage;
     }
