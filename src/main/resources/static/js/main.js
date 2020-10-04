@@ -7,6 +7,7 @@ var messageForm = document.querySelector('#messageForm');
 var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
+var member = document.querySelector('#countMember');
 
 var stompClient = null;
 var username = null;
@@ -76,10 +77,13 @@ function onMessageReceived(payload) {
 
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
+        member.textContent = 'Số lượng online: '+message.member;
+        
         message.content = message.sender + ' đã vào phòng!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' đã rời khỏi phòng!';
+        member.textContent = 'Số lượng online: '+message.member;
     } else {
         messageElement.classList.add('chat-message');
 
