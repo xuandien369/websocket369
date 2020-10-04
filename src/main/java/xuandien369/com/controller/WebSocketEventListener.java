@@ -9,12 +9,12 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import xuandien369.com.model.ChatMessage;
+import xuandien369.com.model.MessageType;
 
 @Component
 public class WebSocketEventListener {
 	@Autowired
     private SimpMessageSendingOperations messagingTemplate;
-	
 	@EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
        System.out.println("Received a new web socket connection");
@@ -25,12 +25,14 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String username = (String) headerAccessor.getSessionAttributes().get("username");
+        Integer member = (Integer) headerAccessor.getSessionAttributes().get("member");
         if(username != null) {
             System.out.println("User Disconnected : " + username);
             ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setType(ChatMessage.MessageType.LEAVE);
+            chatMessage.setType(MessageType.LEAVE);
             chatMessage.setSender(username);
-
+            --member;
+            chatMessage.setMember(member);
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
 	}

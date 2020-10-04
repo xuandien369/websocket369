@@ -4,12 +4,8 @@ public class ChatMessage {
 	private MessageType type;
     private String content;
     private String sender;
+    private Integer member;
 
-    public enum MessageType {
-        CHAT,
-        JOIN,
-        LEAVE
-    }
     public MessageType getType() {
         return type;
     }
@@ -33,4 +29,13 @@ public class ChatMessage {
     public void setSender(String sender) {
         this.sender = sender;
     }
+
+	public Integer getMember() {
+		return member;
+	}
+
+	public void setMember(Integer member) {
+		this.member = member;
+	}
+    
 }
