@@ -3,7 +3,11 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
+.time{
+	font-size: 10px;
+	color: pink;
+	font-style: italic;
+}
 html,body {
     height: 100%;
     overflow: hidden;
@@ -100,12 +104,13 @@ button.default {
 }
 
 button.primary {
-    background-color: #25be38;
+    background-color: #FFB6C1;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
 }
 
 button.accent {
+    
     background-color: #1778dd;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;

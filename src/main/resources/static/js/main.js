@@ -94,6 +94,12 @@ function onMessageReceived(payload) {
         var usernameText = document.createTextNode(message.sender);
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
+        
+        var timeElement = document.createElement('span');
+        var timeText = document.createTextNode('\u00A0 \u00A0'+getCurrentTime());
+        timeElement.classList.add("time");
+        timeElement.appendChild(timeText);
+        messageElement.appendChild(timeElement);
     }
 
     var textElement = document.createElement('p');
@@ -115,6 +121,9 @@ function getAvatarColor(messageSender) {
 
     var index = Math.abs(hash % colors.length);
     return colors[index];
+}
+function getCurrentTime(){
+    return new Date().toLocaleTimeString();
 }
 
 usernameForm.addEventListener('submit', connect, true)
