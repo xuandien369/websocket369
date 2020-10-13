@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import xuandien369.com.MemberCount;
 import xuandien369.com.model.ChatMessage;
 import xuandien369.com.model.MessageType;
+import xuandien369.com.model.UserStorage;
 
 @Component
 public class WebSocketEventListener {
@@ -32,8 +32,11 @@ public class WebSocketEventListener {
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setType(MessageType.LEAVE);
             chatMessage.setSender(username);
-            int count = --MemberCount.countMember;
-            chatMessage.setMember(count);
+    		int count2 = --UserStorage.getInstance().countMember;
+            chatMessage.setMember(count2);
+    		UserStorage.getInstance().getUsers().remove(username);
+    		chatMessage.setUsers(UserStorage.getInstance().getUsers());
+    		System.out.println(chatMessage.getUsers());
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
 	}

@@ -6,9 +6,9 @@
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 <title>Room Chat</title>
 <link rel="stylesheet" href="/css/main.css" />
-<link rel="shortcut icon" type="image/png" href="/img/icon-heart.png"/>
+<link rel="shortcut icon" type="image/png" href="/img/icon-heart.png" />
 </head>
-<body background="/img/trungz12.jpg"
+<body background="/img/vn.png"
 	style="background-position: center; background-repeat: no-repeat; background-size: cover;">
 	<noscript>
 		<h2>Sorry! Your browser doesn't support Javascript</h2>
@@ -17,23 +17,38 @@
 	<div id="username-page" >
 		<div class="username-page-container">
 			<h1 class="title">Nhập tên của bạn</h1>
-			<img alt="hehe" src="/img/hieufboy.jpg" width="300px" height="250px">
 			<form id="usernameForm" name="usernameForm">
 				<div class="form-group">
-					<input type="text" id="name" placeholder="Trung ơi đừng nghiện nữa, Nhà mình còn gì đâu...."
+					<input type="text" id="name"
+						placeholder="Trung ơi đừng nghiện nữa, Nhà mình còn gì đâu...."
 						autocomplete="off" class="form-control" />
 				</div>
 				<div class="form-group">
-					<button type="submit" class="accent username-submit">Vào phòng chat</button>
+					<button type="submit" class="accent username-submit">Vào
+						phòng chat</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
-	<div id="chat-page" class="hidden">
+	<div id="chat-page" class="hidden" >
+				<div id="daubuoirerach">
+					<h3 id="onlinenow"style="text-align: center; font-size:17px;">Online Now</h3>
+					<hr id="hr123">
+					<div id="usersParent">
+					<div id="usersChildren1"> 
+							<a href="#" onclick="selectUser('Everybody')">
+								<span>Mọi người</span>
+							</a>
+					 </div>
+						<div id="usersChildren2">
+							
+						</div>
+					</div>
+				</div>		
 		<div class="chat-container">
 			<div class="chat-header">
-				<h2 id="countMember">Phòng chat yêu nước !!!!! </h2>	
+				<h2 id="countMember">Phòng chat yêu nước !!!!!</h2>
 			</div>
 			<div class="connecting">Connecting...</div>
 			<ul id="messageArea">

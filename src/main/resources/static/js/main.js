@@ -8,9 +8,10 @@ var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
 var member = document.querySelector('#countMember');
+var selectedUser=null;//hieuthu3
 
 var stompClient = null;
-var username = null;
+var username = document.querySelector('#name').value.trim();
 
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -35,8 +36,8 @@ function connect(event) {
 
 function onConnected() {
     // Subscribe to the Public Topic
+    stompClient.subscribe('/topic/messages/'+username, onMessageReceived);
     stompClient.subscribe('/topic/public', onMessageReceived);
-
     // Tell your username to the server
     stompClient.send("/app/chat.addUser",
         {},
@@ -52,7 +53,11 @@ function onError(error) {
     connectingElement.style.color = 'red';
 }
 
-
+function selectUser(userNameS){
+	selectedUser=userNameS;
+	 member.textContent = '';
+    member.textContent = `Xin chào ${username},Bạn đang chat với: ${userNameS}`;
+}
 function send(event) {
     var messageContent = messageInput.value.trim();
 
@@ -63,60 +68,84 @@ function send(event) {
             type: 'CHAT'
         };
 
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send("/app/chat/"+selectedUser, {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
 }
 
 
-function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
+function onMessageReceived(payload,e) {
+		 var message = JSON.parse(payload.body);
 
-    var messageElement = document.createElement('li');
+		    var messageElement = document.createElement('li');
+		    
+		    if(message.type === 'JOIN') {
+		        messageElement.classList.add('event-message');
+		        member.textContent = `Xin chào ${username}!!!!!`;
+		        var usersJS = message.users.map(function(x){
+		            return `<div class="activeUser">
+									   <a href="#" onclick="selectUser(\'${x}\')"><span>${x}</span></a>
+							</div>`;
+		        });
+		        document.querySelector('#usersChildren2').innerHTML=usersJS.join('');
+		        document.querySelector('#onlinenow').innerHTML=`<h3 id="onlinenow"style="text-align: center; font-size:17px;">Online Now ${message.member}</h3>`;
+		        message.content = message.sender + ' đã vào phòng!';
+		    } else if (message.type === 'LEAVE') {
+		        messageElement.classList.add('event-message');
+		        message.content = message.sender + ' đã rời khỏi phòng!';
+//		        member.textContent = 'Số lượng online: '+message.member;
+		        var usersJS = message.users.map(function(x){
+		            return `<div class="activeUser">
+									   <a href="#" onclick="selectUser(\'${x}\')"><span>${x}</span></a>
+							</div>`;
+		        });
+		        document.querySelector('#usersChildren2').innerHTML=usersJS.join('');
+		        document.querySelector('#onlinenow').innerHTML=`<h3 id="onlinenow"style="text-align: center; font-size:17px;">Online Now ${message.member}</h3>`;
+		    } 
 
-    if(message.type === 'JOIN') {
-        messageElement.classList.add('event-message');
-        member.textContent = 'Số lượng online: '+message.member;
-        
-        message.content = message.sender + ' đã vào phòng!';
-    } else if (message.type === 'LEAVE') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' đã rời khỏi phòng!';
-        member.textContent = 'Số lượng online: '+message.member;
-    } else {
-        messageElement.classList.add('chat-message');
+		    else {
+		        messageElement.classList.add('chat-message');
+		        var xuandien369 = selectedUser;//trungngu 
+		        var avatarElement = document.createElement('i');
+		        var avatarText = document.createTextNode(message.sender[0]);
+		        avatarElement.appendChild(avatarText);
+		        avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
-        var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(message.sender[0]);
-        avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(message.sender);
+		        messageElement.appendChild(avatarElement);
 
-        messageElement.appendChild(avatarElement);
+		        var usernameElement = document.createElement('span');
+		        var usernameText;
+		        if(message.sender==username){
+		        	usernameText= document.createTextNode(message.sender + ' to '+xuandien369);
+		        	
+		        }
+		        else {
+		        	if(message.recipient==='Everybody'){
+		        		usernameText= document.createTextNode(message.sender + ' to Everybody');
+		        	}
+		        	else {
+			        	 usernameText = document.createTextNode(message.sender);
+		        	}
+		        }
+		        usernameElement.appendChild(usernameText);
+		        messageElement.appendChild(usernameElement);
+		        
+		        var timeElement = document.createElement('span');
+		        var timeText = document.createTextNode('\u00A0 \u00A0'+getCurrentTime());
+		        timeElement.classList.add("time");
+		        timeElement.appendChild(timeText);
+		        messageElement.appendChild(timeElement);
+		    }
+		    var textElement = document.createElement('p');
+		    var messageText = document.createTextNode(message.content);
+		    textElement.appendChild(messageText);
 
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
-        
-        var timeElement = document.createElement('span');
-        var timeText = document.createTextNode('\u00A0 \u00A0'+getCurrentTime());
-        timeElement.classList.add("time");
-        timeElement.appendChild(timeText);
-        messageElement.appendChild(timeElement);
-    }
+		    messageElement.appendChild(textElement);
 
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
-    textElement.appendChild(messageText);
-
-    messageElement.appendChild(textElement);
-
-    messageArea.appendChild(messageElement);
-    messageArea.scrollTop = messageArea.scrollHeight;
+		    messageArea.appendChild(messageElement);
+		    messageArea.scrollTop = messageArea.scrollHeight;
 }
-
-
 function getAvatarColor(messageSender) {
     var hash = 0;
     for (var i = 0; i < messageSender.length; i++) {
