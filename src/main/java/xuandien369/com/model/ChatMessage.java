@@ -9,6 +9,7 @@ public class ChatMessage {
     private String recipient;
     private Integer member;
     private Set<String> users;
+    private String imageURL;
     
 
     public MessageType getType() {
@@ -58,5 +59,12 @@ public class ChatMessage {
 	public void setRecipient(String recipient) {
 		this.recipient = recipient;
 	}
-    
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 }

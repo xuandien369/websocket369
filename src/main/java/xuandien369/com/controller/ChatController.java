@@ -38,9 +38,10 @@ public class ChatController {
         	}      
     }    
 	@MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
+    @SendTo("/app/public")
     public ChatMessage addUser(@Payload ChatMessage chatMessage, 
                                SimpMessageHeaderAccessor headerAccessor) {
+		System.out.println("addUser nè");
 				int count2 = ++UserStorage.getInstance().countMember;
 		        try {
 		            UserStorage.getInstance().setUser(chatMessage.getSender());
@@ -52,6 +53,14 @@ public class ChatController {
 		        chatMessage.setUsers(UserStorage.getInstance().getUsers());
 		        System.out.println(chatMessage.getUsers());
 		        return chatMessage;
-
     }
+	@MessageMapping("/xd369")
+	public void processMessage(@Payload ChatMessage chatMessage) {
+		if(chatMessage.getImageURL() != null){
+			chatMessage.setContent("");
+		}
+		simpMessagingTemplate.convertAndSendToUser(
+				"113","/queue/messages",chatMessage
+				);
+	}
 }
